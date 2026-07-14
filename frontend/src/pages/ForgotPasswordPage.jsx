@@ -1,53 +1,83 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Card from "../components/common/Card";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
+import axiosClient from "../api/axiosClient";
 
 function ForgotPasswordPage() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axiosClient.patch(
+        "/auth/forgot-password",
+        formData
+      );
+
+      alert(response.data.message);
+
+      navigate("/");
+
+    } catch (error) {
+
+      alert(
+        error.response?.data?.message ||
+        "Unable to update password"
+      );
+
+    }
+  };
+
   return (
     <Card>
-      <div className="text-center mb-8">
 
-        <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center shadow-xl">
-          <span className="text-3xl text-white">
-            🔒
-          </span>
-        </div>
+      <h1>Forgot Password</h1>
 
-        <h1 className="text-4xl font-bold text-slate-800">
-          Forgot Password
-        </h1>
-
-        <p className="text-gray-500 mt-3">
-          Enter your registered email to receive a password reset link.
-        </p>
-
-      </div>
-
-      <form className="space-y-5">
+      <form onSubmit={handleSubmit}>
 
         <Input
           type="email"
-          placeholder="Enter your email address"
+          name="email"
+          placeholder="Enter Email"
+          value={formData.email}
+          onChange={handleChange}
         />
 
-        <Button>
-          Send Reset Link
+        <br />
+        <br />
+
+        <Input
+          type="password"
+          name="password"
+          placeholder="Enter New Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+
+        <br />
+        <br />
+
+        <Button type="submit">
+          Update Password
         </Button>
 
       </form>
-
-      <div className="mt-8 border-t pt-6 text-center">
-
-        <Link
-          to="/"
-          className="font-semibold text-blue-600 hover:text-blue-700"
-        >
-          ← Back to Login
-        </Link>
-
-      </div>
 
     </Card>
   );
