@@ -11,17 +11,29 @@ function Button({
       onClick={onClick}
       disabled={disabled}
       className={`
-        bg-blue-600
-        hover:bg-blue-700
+        w-full
+        cursor-pointer
+        rounded-xl
+        bg-gradient-to-r
+        from-blue-600
+        to-indigo-600
+        px-5
+        py-3
         text-white
-        px-4
-        py-2
-        rounded-lg
-        shadow
-        transition
-        duration-200
-        disabled:opacity-50
+        font-semibold
+        text-base
+        shadow-lg
+        transition-all
+        duration-300
+        hover:from-blue-700
+        hover:to-indigo-700
+        hover:shadow-xl
+        hover:-translate-y-0.5
+        active:scale-95
         disabled:cursor-not-allowed
+        disabled:opacity-60
+        disabled:hover:translate-y-0
+        disabled:hover:shadow-lg
         ${className}
       `}
     >
