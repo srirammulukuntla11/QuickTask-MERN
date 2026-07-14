@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useContext, useState } from "react";
 
+import { AuthContext } from "../context/AuthContext";
 function MainLayout({ children }) {
   const navigate = useNavigate();
 
   const { user, logout } = useContext(AuthContext);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -29,7 +30,7 @@ function MainLayout({ children }) {
             </p>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-6">
 
             <Link
               to="/dashboard"
@@ -100,10 +101,75 @@ function MainLayout({ children }) {
             </button>
 
           </div>
+          <div className="md:hidden">
+  <button
+    onClick={() => setMenuOpen(!menuOpen)}
+    className="p-2 rounded-lg hover:bg-gray-100"
+  >
+{menuOpen ? "✖" : "☰"}
+  </button>
+</div>
 
         </div>
+        
 
       </header>
+      {menuOpen && (
+  <div className="md:hidden bg-white border-b shadow-md">
+    <div className="flex flex-col p-4 gap-4">
+
+      <Link
+        to="/dashboard"
+        onClick={() => setMenuOpen(false)}
+      >
+        Dashboard
+      </Link>
+
+      <Link
+        to="/profile"
+        onClick={() => setMenuOpen(false)}
+      >
+        Profile
+      </Link>
+
+      {user?.role === "admin" && (
+        <>
+          <Link
+            to="/admin"
+            onClick={() => setMenuOpen(false)}
+          >
+            Admin
+          </Link>
+
+          <Link
+            to="/admin/users"
+            onClick={() => setMenuOpen(false)}
+          >
+            Users
+          </Link>
+
+          <Link
+            to="/admin/tasks"
+            onClick={() => setMenuOpen(false)}
+          >
+            Tasks
+          </Link>
+        </>
+      )}
+
+      <button
+        onClick={() => {
+          setMenuOpen(false);
+          handleLogout();
+        }}
+        className="bg-red-500 text-white rounded-lg py-2"
+      >
+        Logout
+      </button>
+
+    </div>
+  </div>
+)}
 
       {/* Main Content */}
 
