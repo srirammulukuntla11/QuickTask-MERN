@@ -1,33 +1,46 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+
 function MainLayout({ children }) {
+  const navigate = useNavigate();
+
   const { user, logout } = useContext(AuthContext);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-slate-100">
 
-      <nav className="bg-blue-600 text-white shadow-md">
+      {/* Navbar */}
+      <header className="bg-white shadow-md border-b sticky top-0 z-50">
 
-        <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-8 py-4">
 
-          <h1 className="text-2xl font-bold">
-            QuickTask
-          </h1>
+          <div>
+            <h1 className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              QuickTask
+            </h1>
+            <p className="text-sm text-gray-500">
+              Task Management System
+            </p>
+          </div>
 
-          <div className="flex gap-6 items-center">
+          <div className="flex items-center gap-6">
 
             <Link
               to="/dashboard"
-              className="hover:text-gray-200"
+              className="font-medium text-gray-700 hover:text-blue-600 transition"
             >
               Dashboard
             </Link>
 
             <Link
               to="/profile"
-              className="hover:text-gray-200"
+              className="font-medium text-gray-700 hover:text-blue-600 transition"
             >
               Profile
             </Link>
@@ -36,33 +49,52 @@ function MainLayout({ children }) {
               <>
                 <Link
                   to="/admin"
-                  className="hover:text-gray-200"
+                  className="font-medium text-gray-700 hover:text-blue-600 transition"
                 >
                   Admin
                 </Link>
 
                 <Link
                   to="/admin/users"
-                  className="hover:text-gray-200"
+                  className="font-medium text-gray-700 hover:text-blue-600 transition"
                 >
                   Users
                 </Link>
 
                 <Link
                   to="/admin/tasks"
-                  className="hover:text-gray-200"
+                  className="font-medium text-gray-700 hover:text-blue-600 transition"
                 >
                   Tasks
                 </Link>
               </>
             )}
 
+            <div className="flex items-center gap-3">
+
+              <div className="text-right">
+
+                <p className="font-semibold text-slate-700">
+                  {user?.name || "User"}
+                </p>
+
+                <p className="text-xs text-gray-500 uppercase">
+                  {user?.role || "Member"}
+                </p>
+
+              </div>
+
+              <div className="w-11 h-11 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg">
+                {user?.name
+                  ? user.name.charAt(0).toUpperCase()
+                  : "U"}
+              </div>
+
+            </div>
+
             <button
-              onClick={() => {
-  logout();
-  navigate("/");
-}}
-              className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+              onClick={handleLogout}
+              className="cursor-pointer rounded-xl bg-red-500 px-5 py-2.5 text-white font-semibold shadow-lg transition hover:bg-red-600 hover:shadow-xl"
             >
               Logout
             </button>
@@ -71,9 +103,11 @@ function MainLayout({ children }) {
 
         </div>
 
-      </nav>
+      </header>
 
-      <main className="max-w-7xl mx-auto p-6">
+      {/* Main Content */}
+
+      <main className="max-w-7xl mx-auto px-6 py-10">
         {children}
       </main>
 

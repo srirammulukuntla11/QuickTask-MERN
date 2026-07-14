@@ -1,5 +1,9 @@
 import { useContext, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
 import Card from "../components/common/Card";
 import Input from "../components/common/Input";
@@ -11,9 +15,9 @@ import { AuthContext } from "../context/AuthContext";
 function LoginPage() {
   const navigate = useNavigate();
 
-  const { token, setToken, setUser } = useContext(AuthContext);
+  const { token, setToken, setUser } =
+    useContext(AuthContext);
 
-  // If already logged in, don't show login page
   if (token) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -49,7 +53,6 @@ function LoginPage() {
       );
 
       setToken(response.data.token);
-
       setUser(response.data.user);
 
       navigate("/dashboard");
@@ -64,68 +67,89 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <Card>
 
-      <Card className="w-full max-w-md">
+      <div className="text-center mb-8">
 
-        <h1 className="text-3xl font-bold text-center mb-6">
+        <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center shadow-xl">
+
+          <span className="text-3xl text-white">
+            ✓
+          </span>
+
+        </div>
+
+        <h1 className="text-4xl font-bold text-slate-800">
           Welcome Back
         </h1>
 
-        <p className="text-center text-gray-500 mb-8">
-          Login to your QuickTask account
+        <p className="text-gray-500 mt-3">
+          Sign in to continue managing your tasks
         </p>
 
-        <form onSubmit={handleSubmit}>
+      </div>
 
-          <div className="mb-4">
-            <Input
-              type="email"
-              name="email"
-              placeholder="Enter Email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5"
+      >
 
-          <div className="mb-6">
-            <Input
-              type="password"
-              name="password"
-              placeholder="Enter Password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
+        <Input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          value={formData.email}
+          onChange={handleChange}
+        />
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </Button>
+        <Input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
 
-        </form>
-
-        <div className="mt-6 text-center">
-
-          <p className="text-gray-600">
-            Don't have an account?
-          </p>
+        <div className="flex justify-end">
 
           <Link
-            to="/register"
-            className="text-blue-600 font-semibold hover:underline"
+            to="/forgot-password"
+            className="text-sm font-medium text-blue-600 hover:text-blue-700"
           >
-            Register
+            Forgot Password?
           </Link>
 
         </div>
 
-      </Card>
+        <Button
+          type="submit"
+          disabled={loading}
+        >
+          {loading
+            ? "Signing In..."
+            : "Sign In"}
+        </Button>
 
-    </div>
+      </form>
+
+      <div className="mt-8 border-t pt-6 text-center">
+
+        <p className="text-gray-600">
+
+          Don't have an account?{" "}
+
+          <Link
+            to="/register"
+            className="font-semibold text-blue-600 hover:text-blue-700"
+          >
+            Create Account
+          </Link>
+
+        </p>
+
+      </div>
+
+    </Card>
   );
 }
 

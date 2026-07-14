@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axiosClient from "../api/axiosClient";
-import Card from "../components/common/Card";
-import Button from "../components/common/Button";
 import Input from "../components/common/Input";
+import Button from "../components/common/Button";
 
 function AdminUsersPage() {
   const { token } = useContext(AuthContext);
@@ -18,13 +17,16 @@ function AdminUsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axiosClient.get("/admin/users", {
-        headers,
-      });
+      const response = await axiosClient.get(
+        "/admin/users",
+        { headers }
+      );
 
       setUsers(response.data.users);
+
     } catch (error) {
       console.log(error);
+
     } finally {
       setLoading(false);
     }
@@ -35,23 +37,26 @@ function AdminUsersPage() {
   }, []);
 
   const deleteUser = async (id) => {
-    const confirmDelete = window.confirm(
-      "Delete this user?"
-    );
 
-    if (!confirmDelete) return;
+    if (!window.confirm("Delete this user?"))
+      return;
 
     try {
-      await axiosClient.delete(`/admin/users/${id}`, {
-        headers,
-      });
+
+      await axiosClient.delete(
+        `/admin/users/${id}`,
+        { headers }
+      );
 
       fetchUsers();
+
     } catch (error) {
+
       alert(
         error.response?.data?.message ||
           "Unable to delete user"
       );
+
     }
   };
 
@@ -67,75 +72,145 @@ function AdminUsersPage() {
 
   if (loading) {
     return (
-      <Card>
-        <h2>Loading Users...</h2>
-      </Card>
+      <div className="flex justify-center items-center h-[70vh]">
+        <h2 className="text-2xl font-semibold">
+          Loading Users...
+        </h2>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <h1>Manage Users</h1>
+    <div className="space-y-8">
 
-      <hr />
+      {/* Header */}
 
-      <Input
-        placeholder="Search by name or email..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-700 p-8 text-white shadow-xl">
 
-      <br />
-      <br />
+        <h1 className="text-5xl font-bold">
+          Manage Users
+        </h1>
 
-      <table
-        border="1"
-        cellPadding="10"
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Created</th>
-            <th>Action</th>
-          </tr>
-        </thead>
+        <p className="mt-3 text-blue-100">
+          Search and manage all registered users.
+        </p>
 
-        <tbody>
-          {filteredUsers.map((user) => (
-            <tr key={user._id}>
-              <td>{user.name}</td>
+      </div>
 
-              <td>{user.email}</td>
+      {/* Search */}
 
-              <td>{user.role}</td>
+      <div className="bg-white rounded-3xl shadow-lg p-6">
 
-              <td>
-                {new Date(
-                  user.createdAt
-                ).toLocaleDateString()}
-              </td>
+        <Input
+          placeholder="Search by name or email..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+        />
 
-              <td>
-                <Button
-                  type="button"
-                  onClick={() =>
-                    deleteUser(user._id)
-                  }
+      </div>
+
+      {/* Table */}
+
+      <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
+
+        <div className="overflow-x-auto">
+
+          <table className="w-full">
+
+            <thead className="bg-slate-100">
+
+              <tr>
+
+                <th className="p-4 text-left">
+                  Name
+                </th>
+
+                <th className="p-4 text-left">
+                  Email
+                </th>
+
+                <th className="p-4 text-left">
+                  Role
+                </th>
+
+                <th className="p-4 text-left">
+                  Joined
+                </th>
+
+                <th className="p-4 text-center">
+                  Action
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {filteredUsers.map((user) => (
+
+                <tr
+                  key={user._id}
+                  className="border-t hover:bg-slate-50 transition"
                 >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Card>
+
+                  <td className="p-4 font-semibold">
+                    {user.name}
+                  </td>
+
+                  <td className="p-4">
+                    {user.email}
+                  </td>
+
+                  <td className="p-4">
+
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        user.role === "admin"
+                          ? "bg-purple-100 text-purple-700"
+                          : "bg-blue-100 text-blue-700"
+                      }`}
+                    >
+                      {user.role}
+                    </span>
+
+                  </td>
+
+                  <td className="p-4">
+                    {new Date(
+                      user.createdAt
+                    ).toLocaleDateString()}
+                  </td>
+
+                  <td className="p-4 text-center">
+
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        deleteUser(user._id)
+                      }
+                      className="bg-red-500 hover:bg-red-600"
+                    >
+                      Delete
+                    </Button>
+
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
   );
 }
 
